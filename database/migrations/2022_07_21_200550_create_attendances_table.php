@@ -16,6 +16,10 @@ return new class extends Migration
         Schema::create('attendances', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->json('students_ids');
+            $table->uuid('course_id');
+            $table->uuid('by');
+            $table->date('date');
+            $table->string('time');
             $table->uuid('class_id');
             $table->timestamps();
         });

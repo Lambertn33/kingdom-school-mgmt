@@ -116,10 +116,11 @@ Route::prefix('home')->group(function(){
                 Route::post('/{courseId}/{student_id}/addMark','saveMark')->name('saveMark');
                 Route::put('/{courseId}/{student_id}/updateMark','updateMark')->name('updateMark');
             });
-            Route::controller(AttendanceController::class)->group(function(){
-                Route::prefix('attendance')->group(function(){
-                    Route::post('/{courseId}/{classId}','addAttendance')->name('addAttendance');
-                });
+        });
+        Route::controller(AttendanceController::class)->group(function(){
+            Route::prefix('attendance')->group(function(){
+                Route::get('/{courseId}/{classId}','makeAttendance')->name('makeAttendance');
+                Route::post('/{courseId}/{classId}','saveAttendance')->name('saveAttendance');
             });
         });
     });

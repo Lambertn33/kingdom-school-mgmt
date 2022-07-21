@@ -22,6 +22,12 @@
     </div>
     <!-- /# column -->
 </div>
+
+<div class="row">
+    <div class="col-md-12">
+        <a href="{{route('makeAttendance',[$course->id,$classRoom->id])}}" style="float: right" class="btn btn-primary btn-sm">Make Attendance</a>
+    </div>
+</div>
 <!-- /# row -->
 <section id="main-content">
     <div class="row">
@@ -97,8 +103,6 @@
                                                <button  data-toggle="modal" data-target="#{{$item->id}}" class="btn btn-info btn-sm">Check Marks</button>
                                                <button  data-toggle="modal" data-target="#{{$item->id}}-edit" class="btn btn-warning btn-sm">Edit Marks</button>
                                                <a href="{{route('addMark',[$course->id,$item->id])}}" class="btn btn-success btn-sm">Add Marks</a>
-                                               <a href="#" onclick="document.getElementById('attendanceForm').submit();" class="btn btn-primary btn-sm">Add Attendance</a>
-                                               <form id="attendanceForm" action="{{route('addAttendance',[$course->id,$classRoom->id])}}" style="display: none" method="POST">
                                                 @csrf
                                                 <input type="hidden" name="studentId" value="{{$item->id}}">
                                                </form>
@@ -173,7 +177,6 @@
                                             @else
                                                <button disabled class="btn btn-info btn-sm">No Marks</button>
                                                <a href="{{route('addMark',[$course->id,$item->id])}}" class="btn btn-success btn-sm">Add Marks</a>
-                                               <a href="" class="btn btn-primary btn-sm">Add Attendance</a>
                                             @endif
                                         </td>
                                     </tr>

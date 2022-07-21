@@ -9,11 +9,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Attendance extends Model
 {
     use HasFactory;
-    protected $fillable = ['id','date','class_id','students_ids'];
+    protected $fillable = ['id','date','class_id','date','time','course_id','by','students_ids'];
 
     protected $casts = [
         'id' => 'string',
-        'class_id' => 'string'
+        'course_id' => 'string',
+        'class_id' => 'string',
+        'by' => 'string'
     ];
 
     /**

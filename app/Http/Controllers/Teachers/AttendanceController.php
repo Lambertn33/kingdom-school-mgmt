@@ -24,36 +24,25 @@ class AttendanceController extends Controller
         });
     }
 
-    public function addAttendance(Request $request,$courseId, $classRoomId)
+    public function makeAttendance($courseId,$classId)
     {
-        $studentId = $request->studentId;
+        $course = Course::find($courseId);
+        $classRoom = ClassRoom::find($classId);
+        $students = $classRoom->students()->orderBy('names','asc')->get();
+        $date = new \DateTime();
+        $todayDate = $date->format('Y-m-d');
+        return view('Teachers/Attendances/create',compact('course','students','classRoom','todayDate'));
+
+    }
+    public function saveAttendance(Request $request,$courseId,$classId)
+    {
         $date = new \DateTime();
         $date->setTimezone(new \DateTimeZone('+0200'));
-        $classRoom = ClassRoom::find($classRoomId);
+        $course = Course::find($courseId);
+        $classRoom = ClassRoom::find($classId);
         $todayTime = $date->format('H:i');
         $todayDate = $date->format('Y-m-d');
-        $uuid = Str::uuid()->toString();
-        try {
-            DB::beginTransaction();
-            $newAttendance = [
-                'id'=> $uuid,
-                'date' => $todayDate,
-                'time' => $todayTime,
-                'created_at' => now(),
-                'updated_at' => now()
-            ];
-            Attendance::insert($newAttendance);
-            $classRoom->attendances()->attach($uuid, array(
-                        'id' => Str::uuid()->toString(),
-                        'student_id'=>$studentId,
-                        'by' => Auth::user()->id,
-                        'course_id' => $courseId,
-                        'created_at' => now(),
-                        'updated_at' => now(),
-            ));
-            DB::commit();
-        } catch (\Throwable $th) {
-            throw $th;
-        }
+        $absentStudents = $request->absentStudents;
+        return $absentStudents;
     }
 }
