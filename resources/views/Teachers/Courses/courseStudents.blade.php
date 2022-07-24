@@ -25,7 +25,45 @@
 
 <div class="row">
     <div class="col-md-12">
+        @if (is_null($checkAttendance))
         <a href="{{route('makeAttendance',[$course->id,$classRoom->id])}}" style="float: right" class="btn btn-primary btn-sm">Make Attendance</a>
+        @else
+        <a href="{{route('makeAttendance',[$course->id,$classRoom->id])}}" style="float: right" class="btn btn-primary btn-sm disabled">Attendance Made</a>
+        <button data-toggle="modal" data-target="#{{$checkAttendance->id}}" class="btn btn-success btn-sm" style="float: right;margin-right:5px;">View Absents students</button>
+
+        <!--Attendance Modal-->
+        <div class="modal fade" id="{{$checkAttendance->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Absent Students in {{$course->name}} on {{$todayDate}}</h5>
+                </div>
+                <div class="modal-body">
+                 <div class="row">
+                     <div class="col-md-12">
+                        @if (count($absentStudents) > 0)
+                             <ul class="list-group">
+                            @foreach ($absentStudents as $item)
+                                <li class="list-group-item">{{$item->names}} - {{$item->student_no}}</li>
+                            @endforeach
+                         </ul>
+                        @else
+                        <div class="alert alert-success">
+                            <h5>All Students Were Present in  in {{$course->name}} on {{$todayDate}}</h5>
+                        </div>
+                        @endif
+                     </div>
+                 </div>
+                 </div>
+                 <div class="modal-footer">
+                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                 </div>
+            </div>
+            </div>
+        </div>
+
+        <!--End Attendance-->
+        @endif
     </div>
 </div>
 <!-- /# row -->

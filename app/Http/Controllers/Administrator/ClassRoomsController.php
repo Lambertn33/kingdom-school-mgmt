@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use App\Models\ClassRoom;
+use App\Models\Attendance;
 use App\Models\Student;
 use App\Models\Teacher;
 use App\Models\Course;
@@ -248,5 +249,48 @@ class ClassRoomsController extends Controller
             DB::rollback();
             return back()->withInput()->with('danger','an error occured,,please try again');
         }
+    }
+
+    //Attendances
+
+    public function searchAttendance(Request $request , $id)
+    {
+        $date = $request->date;
+        $absentStudents = [];
+        $course = $request->course;
+        $checkAttendance = Attendance::where('course_id',$course)->where('class_id',$id)->where('date',$date)->first();
+        if(!is_null($checkAttendance)) {
+            $decodedIds = json_decode($checkAttendance->students_ids);
+            if (!is_null($decodedIds)) {
+                foreach ($decodedIds as $value) {
+                    $absentStudents[] = Student::where('id',$value)->first();
+                }
+            }
+            if($request->session()->has('absentStudents')) {
+                $request->session()->forget('absentStudents');
+            }
+            if($request->session()->has('course')) {
+                $request->session()->forget('course');
+            }
+            if($request->session()->has('date')) {
+                $request->session()->forget('date');
+            }
+    
+            $request->session()->put('absentStudents',$absentStudents);
+            $request->session()->put('date',$date);
+            $request->session()->put('course',$course);
+            return redirect()->route('viewAttendance',$id);
+        } else {
+            return back()->with('danger','no data available for the selected date and course');
+        }
+    }
+    
+    public function viewAttendance(Request $request, $id)
+    {
+        $absentStudents = $request->session()->get('absentStudents');
+        $attendanceDate = $request->session()->get('date');
+        $attendanceCourse = Course::find($request->session()->get('course'));
+        $classRoom = ClassRoom::find($id);
+        return view('Admin/classrooms/attendances/index',compact('classRoom','absentStudents','attendanceDate','attendanceCourse'));
     }
 }

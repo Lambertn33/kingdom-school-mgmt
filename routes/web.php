@@ -77,22 +77,28 @@ Route::prefix('home')->group(function(){
                     Route::get('/','createNewClassRoom')->name('createNewClassRoom');
                     Route::post('/','saveNewClassRoom')->name('saveNewClassRoom');
                });
-                Route::prefix('/{id}')->group(function(){
-                   Route::prefix('students')->group(function(){
-                      Route::get('/','viewStudents')->name('viewStudents');
-                      Route::get('/create','addStudent')->name('addStudent');
-                      Route::get('/create/import','getExcelSample')->name('getExcelSample');
-                      Route::post('/create/import','importStudents')->name('importStudents');
-                      Route::post('/create','saveStudent')->name('saveStudent');
-                      Route::prefix('/{student}')->group(function(){
+                Route::prefix('/{id}')->group(function(){                    
+                    Route::prefix('students')->group(function(){
+                        Route::get('/','viewStudents')->name('viewStudents');
+                        Route::get('/create','addStudent')->name('addStudent');
+                        Route::get('/create/import','getExcelSample')->name('getExcelSample');
+                        Route::post('/create/import','importStudents')->name('importStudents');
+                        Route::post('/create','saveStudent')->name('saveStudent');
+                        Route::prefix('/{student}')->group(function(){
                         Route::get('/viewMarks','viewMarks')->name('viewMarks');
                         Route::get('/printMarks','printMarks')->name('printMarks');
                       });
                    });
-                   Route::prefix('courses')->group(function(){
-                      Route::get('/','viewCourses')->name('viewCourses');
-                      Route::get('/create','addCourse')->name('addCourse');
-                      Route::post('/create','saveCourse')->name('saveCourse');
+                    Route::prefix('courses')->group(function(){
+                        Route::get('/','viewCourses')->name('viewCourses');
+                        Route::get('/create','addCourse')->name('addCourse');
+                        Route::post('/create','saveCourse')->name('saveCourse');
+                      
+                      //Attendances 
+                        Route::prefix('attendances')->group(function() {
+                            Route::post('/','searchAttendance')->name('searchAttendance');
+                            Route::get('/','viewAttendance')->name('viewAttendance');
+                        });
                    });
                 });
              });

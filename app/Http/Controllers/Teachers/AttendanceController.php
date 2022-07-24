@@ -43,6 +43,25 @@ class AttendanceController extends Controller
         $todayTime = $date->format('H:i');
         $todayDate = $date->format('Y-m-d');
         $absentStudents = $request->absentStudents;
-        return $absentStudents;
+        try {
+            DB::beginTransaction();
+            $attendance = [
+                'id' => Str::uuid()->toString(),
+                'course_id' => $course->id,
+                'by' => Auth::user()->id,
+                'date' => $todayDate,
+                'time' => $todayTime,
+                'class_id' => $classRoom->id,
+                'students_ids' => json_encode($absentStudents),
+                'created_at' => now(),
+                'updated_at' => now()
+            ];
+            Attendance::insert($attendance);
+            DB::commit();
+            return redirect()->route('teacherViewStudents',[$course->id,$classRoom->id])->with('success','attendance made successfully');
+        } catch (\Throwable $th) {
+            DB::rollback();
+            return back()->withInput()->with('danger','an error occured..please try again');
+        }
     }
 }

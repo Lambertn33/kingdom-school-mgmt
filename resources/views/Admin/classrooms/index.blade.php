@@ -72,8 +72,53 @@
                                        <td> {{$item->students()->count()}}</td>
                                        <td> {{$item->courses()->count()}}</td>
                                        <td> 
-                                           <a href="{{route('viewStudents',$item->id)}}" class="btn btn-primary btn-sm">View Students</a>
-                                           <a href="{{route('viewCourses',$item->id)}}" class="btn btn-success btn-sm">View Courses</a>
+                                           <a href="{{route('viewStudents',$item->id)}}" class="btn btn-primary btn-sm">Students</a>
+                                           <a href="{{route('viewCourses',$item->id)}}" class="btn btn-success btn-sm">Courses</a>
+                                           @if ($item->courses()->count() > 0 && $item->students()->count())
+                                           <a href="" data-toggle="modal" data-target="#{{$item->id}}-attendances" class="btn btn-warning btn-sm">Attendances</a>
+                                           @else
+                                           <button href=""  class="btn btn-danger btn-sm" disabled>No Attendance</button>
+                                           @endif
+
+                                                   <!--Attendance Modal-->
+                                            <div class="modal fade" id="{{$item->id}}-attendances" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="exampleModalLabel">Check Attendances in {{$item->room_code}}</h5>
+                                                    </div>
+                                                    <form action="{{route('searchAttendance',$item->id)}}" method="POST">
+                                                        @csrf
+                                                        <div class="modal-body">
+                                                            <div class="row">
+                                                                <div class="col-md-12">
+                                                                    <div class="form-group">
+                                                                        <label>Select Course</label>
+                                                                        <select class="form-control" required name="course">
+                                                                            <option selected disabled>Choose Course</option>
+                                                                            @foreach ($item->courses()->get() as $course)
+                                                                                <option value="{{$course->id}}">{{$course->name}}</option>
+                                                                            @endforeach
+                                                                        </select>
+                                                                    </div>
+                                                                    <br>
+                                                                    <div class="form-group">
+                                                                        <label>Select Date</label>
+                                                                        <input type="date" max="<?php echo date('Y-m-d') ?>" name="date" class="form-control">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="submit" class="btn btn-primary">Proceed</button>
+                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                                </div>
+                                            </div>
+
+                                            <!--End Attendance-->
                                        </td>
                                     </tr>
                                     @endforeach

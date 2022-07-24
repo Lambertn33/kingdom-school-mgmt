@@ -13,6 +13,7 @@ use App\Models\Mark;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use App\Models\Attendance;
 
 class CoursesController extends Controller
 {
@@ -29,10 +30,24 @@ class CoursesController extends Controller
 
     public function viewStudents($courseId , $classRoomId)
     {
+        $absentStudents = [];
         $course = Course::find($courseId);
         $classRoom =  ClassRoom::find($classRoomId);
         $students = Student::where('classroom_id',$classRoomId)->get();
-        return view('Teachers/Courses/courseStudents',compact('students','course','classRoom'));
+        $date = new \DateTime();
+        $todayDate = $date->format('Y-m-d');
+        $checkAttendance = Attendance::where('course_id',$courseId)->where('class_id',$classRoomId)->where('date',$todayDate)->first();
+        if(!is_null($checkAttendance)) {
+            $decodedIds = json_decode($checkAttendance->students_ids);
+            if (!is_null($decodedIds)) {
+                foreach ($decodedIds as $value) {
+                    $absentStudents[] = Student::where('id',$value)->first();
+                }
+            }
+            return view('Teachers/Courses/courseStudents',compact('students','course','classRoom','checkAttendance','absentStudents','todayDate'));
+        } else {
+            return view('Teachers/Courses/courseStudents',compact('students','course','classRoom','checkAttendance'));
+        }
     }
 
     public function addMark($courseId , $studentId)
