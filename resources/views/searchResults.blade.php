@@ -28,6 +28,14 @@
             <div class="card">
                 <div class="bootstrap-data-table-panel">
                     <div class="table-responsive">
+                        @foreach (['danger', 'warning', 'success', 'info'] as $msg)
+                            @if(Session::has($msg))
+                            <div class="alert alert-{{ $msg }} alert-dismissable">
+                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                                {{ Session::get($msg) }}
+                            </div>
+                            @endif
+                        @endforeach
                         <table id="bootstrap-data-table-export" class="table table-striped table-bordered">
                             <thead>
                                 <tr>
@@ -35,6 +43,7 @@
                                     <th>Student Names</th>
                                     <th>Student Gender</th>
                                     <th>Sudent No</th>
+                                    <th>Classroom</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -47,10 +56,41 @@
                                        <td> {{$item->names}}</td>
                                        <td> {{$item->gender}}</td>
                                        <td> {{$item->student_no}}</td>
+                                       <td> {{$item->classroom->room_code}}</td>
                                        <td> 
-                                           <a href="" class="btn btn-success btn-sm">View Marks</a>
+                                        <button  data-toggle="modal" data-target="#{{$item->id}}" class="btn btn-success btn-sm">View Marks</button>
                                        </td>
                                     </tr>
+                                    <div class="modal fade" id="{{$item->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel">ViewMarks for {{$item->names}}</h5>
+                                            </div>
+                                            <form action="{{route('viewMarks',[$item->classroom->id,$item->id])}}" method="GET">
+                                            <div class="modal-body">
+                                             <div class="row">
+                                                 <div class="col-md-12">
+                                                     <div class="form-group">
+                                                         <label>Select Trimester Marks to Edit</label>
+                                                         <select class="form-control" required name="trimester">
+                                                             <option selected disabled>Choose Trimester</option>
+                                                             @foreach (\App\Models\Mark::Trimester as $trimester)
+                                                                 <option value="{{$trimester}}">{{$trimester}}</option>
+                                                             @endforeach
+                                                         </select>
+                                                     </div>
+                                                 </div>
+                                             </div>
+                                             </div>
+                                             <div class="modal-footer">
+                                                 <button type="submit" class="btn btn-primary">Proceed</button>
+                                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                             </div>
+                                         </form>
+                                        </div>
+                                        </div>
+                                    </div>
                                     @endforeach
                             </tbody>
                         </table>

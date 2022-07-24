@@ -93,7 +93,6 @@
                                        <td> {{$item->gender}}</td>
                                        <td> {{$item->student_no}}</td>
                                        <td> 
-                                           {{-- <a href="{{route('viewMarks',[$classRoom->id,$item->id])}}" class="btn btn-success btn-sm">View Marks</a> --}}
                                            <button  data-toggle="modal" data-target="#{{$item->id}}" class="btn btn-success btn-sm">View Marks</button>
                                        </td>
                                     </tr>
