@@ -14,7 +14,7 @@ class TeachersController extends Controller
     public function __construct()
     {
         $this->middleware(function($request , $next){
-            if(Auth::check() && Auth::user()->role->name == \App\Models\Role::ADMINISTRATOR){
+            if(Auth::check() && Auth::user()->role->name == \App\Models\Role::ADMINISTRATOR || Auth::check() && Auth::user()->role->name == \App\Models\Role::DIRECTOR_OF_STUDIES){
                 return $next($request);
             }else{
                 return back();

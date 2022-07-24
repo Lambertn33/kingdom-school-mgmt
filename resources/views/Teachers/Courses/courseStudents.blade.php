@@ -23,6 +23,7 @@
     <!-- /# column -->
 </div>
 
+@if (count($students) > 0)
 <div class="row">
     <div class="col-md-12">
         @if (is_null($checkAttendance))
@@ -66,6 +67,7 @@
         @endif
     </div>
 </div>
+@endif
 <!-- /# row -->
 <section id="main-content">
     <div class="row">
