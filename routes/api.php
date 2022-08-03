@@ -2,6 +2,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\ClassRoomController;
+use App\Http\Controllers\Api\UsersController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,6 +16,18 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::controller(ClassRoomController::class)->group(function() {
+    Route::prefix('classrooms')->group(function() {
+        Route::get('/','getAllClassRooms');
+        Route::prefix('/{id}')->group(function() {
+            Route::get('/students','getClassRoomStudents');
+            Route::post('/students/create','createNewStudent');
+        });
+    });
+});
+Route::controller(UsersController::class)->group(function() {
+    Route::prefix('teachers')->group(function() {
+        Route::get('/','getAllTeachers');
+        Route::post('/create','createNewTeacher');
+    });
 });
